@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const certificatesData = [
     {
       id: 1,
-      image: "./img/Certificate_779 (1).jpg",
+      image: "./img/fest.jpg",
       title: 'Брав участь у конференції IT Future Fest 2025',
       date: "11.04.2025",
       organizer: "Львівський ІТ Кластер",
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     {
       id: 5,
-      image: "./img/Chyzhevskyi.jpg",
+      image: "./img/INFOMATRIX.jpg",
       title:
         "Учасник Національного конкурсу комп’ютерних проєктів INFOMATRIX UKRAINE 2025",
       date: "28.03.2025",
