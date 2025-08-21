@@ -12,23 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
     showLoading(true);
     hideNotification();
 
-    // Отримати дані форми
     const formData = new FormData(form);
-    const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone") || "Не вказано",
-      subject: formData.get("subject"),
-      message: formData.get("message"),
-    };
 
     try {
       const response = await fetch("/send-message", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        body: formData, // Send FormData directly instead of JSON
       });
 
       const result = await response.json();
@@ -83,8 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
     notification.style.display = "none";
   }
 
-  // Валідація в реальному часі
-  const inputs = form.querySelectorAll("input, textarea");
+  const inputs = form.querySelectorAll("input, textarea, select");
   inputs.forEach((input) => {
     input.addEventListener("blur", function () {
       validateField(this);
@@ -110,7 +98,29 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    if (field.type === "url" && value) {
+      try {
+        new URL(value);
+      } catch {
+        field.style.borderColor = "#dc3545";
+        return false;
+      }
+    }
+
+    if (field.name === "telegramUsername" && value && !value.startsWith("@")) {
+      field.style.borderColor = "#dc3545";
+      return false;
+    }
+
     field.style.borderColor = "#28a745";
     return true;
   }
+
+  const telegramUsernameInput = document.getElementById("telegramUsername");
+  telegramUsernameInput.addEventListener("input", function () {
+    const value = this.value;
+    if (value && !value.startsWith("@")) {
+      this.value = "@" + value;
+    }
+  });
 });

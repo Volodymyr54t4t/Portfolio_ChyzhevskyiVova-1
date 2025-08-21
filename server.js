@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const axios = require("axios");
+const multer = require("multer");
 require("dotenv").config();
 
 const app = express();
@@ -9,6 +10,14 @@ const PORT = process.env.PORT || 3000;
 // Конфігурація Telegram бота
 const TELEGRAM_BOT_TOKEN = "8355589382:AAErPJi6IS5EcWhOwTVLqH5DU7Vxp0GzMUM";
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID; // Потрібно отримати chat_id групи
+
+const upload = multer({
+  dest: "uploads/",
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+});
+
 app.use(express.static(path.join(__dirname, "public")));
 // Middleware
 app.use(express.json());
@@ -20,30 +29,90 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "contact.html"));
 });
 
-// Обробка відправки повідомлення
-app.post("/send-message", async (req, res) => {
+app.post("/send-message", upload.single("attachment"), async (req, res) => {
   try {
-    const { name, email, phone, subject, message } = req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      company,
+      position,
+      github,
+      linkedin,
+      telegram,
+      telegramUsername,
+      website,
+      projectType,
+      budget,
+      deadline,
+      projectDetails,
+      privacyConsent,
+    } = req.body;
+
+    console.log("[v0] Received form data:", {
+      firstName: !!firstName,
+      lastName: !!lastName,
+      email: !!email,
+      phone: !!phone,
+      projectType: !!projectType,
+      budget: !!budget,
+      projectDetails: !!projectDetails,
+      privacyConsent: !!privacyConsent,
+      hasFile: !!req.file,
+    });
 
     // Валідація даних
-    if (!name || !email || !subject || !message) {
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !phone ||
+      !projectType ||
+      !budget ||
+      !projectDetails ||
+      !privacyConsent
+    ) {
+      console.log("[v0] Validation failed - missing required fields");
       return res.status(400).json({
-        error: "Будь ласка, заповніть всі обов'язкові поля",
+        error:
+          "Будь ласка, заповніть всі обов'язкові поля та дайте згоду на обробку персональних даних",
       });
     }
 
-    // Формування повідомлення для Telegram з правильним форматуванням
-    const telegramMessage = `🔔 *Нове повідомлення з контактної форми*
+    const telegramMessage = `🔔 <b>Нове повідомлення з контактної форми</b>
 
-👤 *Ім'я:* ${name}
-📧 *Email:* ${email}
-📱 *Телефон:* ${phone || "Не вказано"}
-📋 *Тема:* ${subject}
+👤 <b>Ім'я:</b> ${firstName}
+👤 <b>Прізвище:</b> ${lastName}
+📧 <b>Email:</b> ${email}
+📱 <b>Телефон:</b> ${phone}
+${company ? `🏢 <b>Компанія:</b> ${company}\n` : ""}${
+      position ? `💼 <b>Посада:</b> ${position}\n` : ""
+    }
+🌐 <b>Соцмережі:</b>
+${github ? `🐙 <b>GitHub:</b> ${github}\n` : ""}${
+      linkedin ? `💼 <b>LinkedIn:</b> ${linkedin}\n` : ""
+    }${telegram ? `💬 <b>Telegram:</b> ${telegram}\n` : ""}${
+      telegramUsername ? `📱 <b>Нік у Telegram:</b> ${telegramUsername}\n` : ""
+    }${website ? `🌍 <b>Вебсайт/портфоліо:</b> ${website}\n` : ""}
+📋 <b>Деталі проекту:</b>
+🎯 <b>Тип проекту:</b> ${projectType}
+💰 <b>Бюджет:</b> ${budget}
+${deadline ? `⏳ <b>Дедлайн:</b> ${deadline}\n` : ""}
+📝 <b>Опис проекту:</b>
+${projectDetails}
 
-💬 *Повідомлення:*
-${message}
+${
+  req.file
+    ? `📎 <b>Прикріплений файл:</b> ${req.file.originalname} (${Math.round(
+        req.file.size / 1024
+      )} KB)`
+    : "📎 <b>Файли:</b> Не прикріплено"
+}
 
-⏰ *Час:* ${new Date().toLocaleString("uk-UA")}`;
+✅ <b>Згода на обробку даних:</b> Надано
+
+⏰ <b>Час:</b> ${new Date().toLocaleString("uk-UA")}`;
 
     // Перевірка чи встановлено TELEGRAM_CHAT_ID
     if (!TELEGRAM_CHAT_ID) {
@@ -57,17 +126,47 @@ ${message}
     console.log("[v0] Sending message to Telegram:", {
       chat_id: TELEGRAM_CHAT_ID,
       message_length: telegramMessage.length,
+      hasFile: !!req.file,
     });
 
-    // Відправка повідомлення в Telegram
     const telegramResponse = await axios.post(
       `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
       {
         chat_id: TELEGRAM_CHAT_ID,
         text: telegramMessage,
-        parse_mode: "Markdown",
+        parse_mode: "HTML",
       }
     );
+
+    if (req.file) {
+      try {
+        const fs = require("fs");
+        const FormData = require("form-data");
+
+        const form = new FormData();
+        form.append("chat_id", TELEGRAM_CHAT_ID);
+        form.append(
+          "document",
+          fs.createReadStream(req.file.path),
+          req.file.originalname
+        );
+        form.append("caption", `📎 Файл від ${firstName} ${lastName}`);
+
+        await axios.post(
+          `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`,
+          form,
+          {
+            headers: form.getHeaders(),
+          }
+        );
+
+        // Clean up uploaded file
+        fs.unlinkSync(req.file.path);
+      } catch (fileError) {
+        console.error("Error sending file to Telegram:", fileError);
+        // Continue even if file upload fails
+      }
+    }
 
     console.log("[v0] Telegram response:", telegramResponse.data);
 

@@ -14,30 +14,125 @@
             <h1>Зв'язатися зі мною</h1>
             <p class="subtitle">Маєте питання або пропозицію? Напишіть мені!</p>
 
-            <form id="contactForm" class="contact-form">
-                <div class="form-group">
-                    <label for="name">Ім'я *</label>
-                    <input type="text" id="name" name="name" required>
+            <form id="contactForm" class="contact-form" enctype="multipart/form-data">
+                <!-- <CHANGE> Added separate fields for first and last name -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">Ім'я *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Прізвище *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="email">Email *</label>
-                    <input type="email" id="email" name="email" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Телефон *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="phone">Телефон</label>
-                    <input type="tel" id="phone" name="phone">
+                <!-- <CHANGE> Added company and position fields -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="company">Компанія</label>
+                        <input type="text" id="company" name="company">
+                    </div>
+                    <div class="form-group">
+                        <label for="position">Посада</label>
+                        <input type="text" id="position" name="position">
+                    </div>
                 </div>
 
+                <!-- <CHANGE> Added social media fields -->
                 <div class="form-group">
-                    <label for="subject">Тема *</label>
-                    <input type="text" id="subject" name="subject" required>
+                    <label>Соцмережі</label>
+                    <div class="social-inputs">
+                        <input type="url" id="github" name="github" placeholder="GitHub профіль">
+                        <input type="url" id="linkedin" name="linkedin" placeholder="LinkedIn профіль">
+                        <input type="url" id="telegram" name="telegram" placeholder="Telegram профіль">
+                    </div>
                 </div>
 
+                <!-- <CHANGE> Added Telegram username field -->
                 <div class="form-group">
-                    <label for="message">Повідомлення *</label>
-                    <textarea id="message" name="message" rows="6" required></textarea>
+                    <label for="telegramUsername">Нік у Telegram</label>
+                    <input type="text" id="telegramUsername" name="telegramUsername" placeholder="@username">
+                </div>
+
+                <!-- <CHANGE> Added website/portfolio field -->
+                <div class="form-group">
+                    <label for="website">Вебсайт/портфоліо</label>
+                    <input type="url" id="website" name="website" placeholder="https://yourwebsite.com">
+                </div>
+
+                <!-- <CHANGE> Added project type and budget fields -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="projectType">Тип проекту *</label>
+                        <select id="projectType" name="projectType" required>
+                            <option value="">Оберіть тип проекту</option>
+                            <option value="Веб-сайт">Веб-сайт</option>
+                            <option value="Мобільний додаток">Мобільний додаток</option>
+                            <option value="Інтернет-магазин">Інтернет-магазин</option>
+                            <option value="Корпоративний сайт">Корпоративний сайт</option>
+                            <option value="Лендінг">Лендінг</option>
+                            <option value="Веб-додаток">Веб-додаток</option>
+                            <option value="Дизайн">Дизайн</option>
+                            <option value="Консультація">Консультація</option>
+                            <option value="Інше">Інше</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="budget">Бюджет *</label>
+                        <select id="budget" name="budget" required>
+                            <option value="">Оберіть бюджет</option>
+                            <option value="До $500">До $500</option>
+                            <option value="$500 - $1000">$500 - $1000</option>
+                            <option value="$1000 - $2500">$1000 - $2500</option>
+                            <option value="$2500 - $5000">$2500 - $5000</option>
+                            <option value="$5000 - $10000">$5000 - $10000</option>
+                            <option value="Більше $10000">Більше $10000</option>
+                            <option value="Обговорюється">Обговорюється</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- <CHANGE> Added deadline field -->
+                <div class="form-group">
+                    <label for="deadline">Дедлайн</label>
+                    <input type="date" id="deadline" name="deadline">
+                </div>
+
+                <!-- <CHANGE> Changed message to project details -->
+                <div class="form-group">
+                    <label for="projectDetails">Деталі проекту *</label>
+                    <textarea id="projectDetails" name="projectDetails" rows="8" required
+                        placeholder="Опишіть детально ваш проект, вимоги, функціонал, який ви хочете реалізувати..."></textarea>
+                </div>
+
+                <!-- <CHANGE> Added file upload field -->
+                <div class="form-group">
+                    <label for="attachment">Прикріпити файл</label>
+                    <input type="file" id="attachment" name="attachment"
+                        accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.zip,.rar">
+                    <small class="file-info">Максимальний розмір файлу: 10MB. Підтримувані формати: PDF, DOC, DOCX, TXT,
+                        JPG, PNG, ZIP, RAR</small>
+                </div>
+
+                <!-- <CHANGE> Added privacy consent checkbox -->
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="privacyConsent" name="privacyConsent" required>
+                        <span class="checkmark"></span>
+                        Я даю згоду на обробку моїх персональних даних *
+                    </label>
                 </div>
 
                 <button type="submit" class="submit-btn">

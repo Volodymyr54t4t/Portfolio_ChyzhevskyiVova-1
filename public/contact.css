@@ -53,6 +53,22 @@ h1 {
   flex-direction: column;
 }
 
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.social-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.social-inputs input {
+  padding: 12px 15px;
+}
+
 label {
   margin-bottom: 8px;
   color: #333;
@@ -61,7 +77,8 @@ label {
 }
 
 input,
-textarea {
+textarea,
+select {
   padding: 15px;
   border: 2px solid #e1e5e9;
   border-radius: 10px;
@@ -71,7 +88,8 @@ textarea {
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -80,6 +98,53 @@ textarea:focus {
 textarea {
   resize: vertical;
   min-height: 120px;
+}
+
+select {
+  background-color: white;
+  cursor: pointer;
+}
+
+input[type="file"] {
+  padding: 10px;
+  border: 2px dashed #e1e5e9;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+input[type="file"]:hover {
+  border-color: #667eea;
+  background-color: #f0f2ff;
+}
+
+.file-info {
+  color: #666;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.checkbox-group {
+  margin: 20px 0;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-right: 10px;
+  margin-top: 2px;
+  transform: scale(1.2);
+}
+
+.checkbox-label:hover {
+  color: #667eea;
 }
 
 .submit-btn {
@@ -145,6 +210,15 @@ textarea {
   .container {
     padding: 10px;
   }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .social-inputs {
+    gap: 15px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -157,7 +231,8 @@ textarea {
   }
 
   input,
-  textarea {
+  textarea,
+  select {
     padding: 12px;
   }
 
