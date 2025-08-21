@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
-  <!-- <CHANGE> Added AOS library for scroll animations -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <!-- PWA Support -->
@@ -39,7 +38,6 @@
           <li><a href="#counters" data-translate="nav_counters">Лічильники</a></li>
           <li><a href="credentials.html" data-translate="nav_credentials">Сертифікати та дипломи</a></li>
         </ul>
-        <!-- <CHANGE> Added language switcher -->
         <div class="language-switcher">
           <div class="current-lang">
             <span id="currentLang">UA</span>
@@ -77,8 +75,7 @@
           </p>
           <div class="hero-btns">
             <a href="#projects" class="btn primary-btn" data-translate="hero_projects">Мої проекти</a>
-            <a href="#counters" class="btn secondary-btn" data-translate="hero_contact">Зв'язатися</a>
-          </div>
+                </div>
           <div class="social-icons">
             <a href="#" target="_blank"><i class="fab fa-github"></i></a>
             <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
@@ -110,7 +107,7 @@
           <img src="./img/Володимир Чижевський.JPG" alt="Володимир Чижевський" />
         </div>
         <div class="about-text" data-aos="fade-left">
-          <h3>Чижевський Володимир Володимирович</h3>
+          <h3 data-translate="about_full_name">Чижевський Володимир Володимирович</h3>
           <p data-translate="about_text1">
             Я — веб-розробник, захоплений створенням сучасних, ефективних та
             візуально привабливих веб-додатків. Володію глибокими знаннями
@@ -134,7 +131,7 @@
               <i class="fas fa-user"></i>
               <div>
                 <h4 data-translate="about_name">Ім'я</h4>
-                <p>Володимир Чижевський</p>
+                <p data-translate="about_name_value">Володимир Чижевський</p>
               </div>
             </div>
             <div class="detail">
@@ -155,7 +152,7 @@
               <i class="fas fa-map-marker-alt"></i>
               <div>
                 <h4 data-translate="about_location">Місцезнаходження</h4>
-                <p>Житомир, Україна</p>
+                <p data-translate="about_location_value">Житомир, Україна</p>
               </div>
             </div>
           </div>
@@ -568,7 +565,6 @@
     </div>
   </section>
 
-  <!-- <CHANGE> Replaced contact section with counters section -->
   <!-- Counters Section -->
   <section id="counters" class="counters">
     <div class="container">
@@ -759,7 +755,7 @@
   <div class="toast" id="toast">
     <div class="toast-content">
       <i class="fas fa-check-circle toast-icon"></i>
-      <div class="toast-message">Повідомлення успішно надіслано!</div>
+      <div class="toast-message" data-translate="toast_success">Повідомлення успішно надіслано!</div>
     </div>
     <div class="toast-progress"></div>
   </div>
@@ -769,7 +765,6 @@
     <i class="fas fa-arrow-up"></i>
   </a>
 
-  <!-- <CHANGE> Added AOS library script -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="script.js"></script>
   <!-- Register Service Worker for PWA -->

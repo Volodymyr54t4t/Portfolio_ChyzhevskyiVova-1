@@ -6,7 +6,6 @@ const themeSwitch = document.querySelector(".theme-switch");
 const backToTopButton = document.querySelector(".back-to-top");
 const filterButtons = document.querySelectorAll(".filter-btn");
 const projectCards = document.querySelectorAll(".project-card");
-// const contactForm = document.getElementById("contactForm"); // REMOVED
 const formStatus = document.getElementById("formStatus");
 const toast = document.getElementById("toast");
 const testimonialForm = document.getElementById("testimonialForm");
@@ -28,6 +27,22 @@ let testimonials = [];
 let deferredPrompt;
 let currentLanguage = "ua";
 
+const counters = {
+  portfolioViews: 0,
+  completedProjects: 25,
+  happyClients: 18,
+  linesOfCode: 50000,
+  cupsOfCoffee: 342,
+  workingHours: 2500,
+  positiveReviews: 23,
+  resumeDownloads: 156,
+  visitorCountries: 12,
+  mobileViews: 0,
+  desktopViews: 0,
+  messagesReceived: 89,
+  todayViews: 0,
+};
+
 const translations = {
   ua: {
     nav_home: "Головна",
@@ -44,6 +59,7 @@ const translations = {
     hero_projects: "Мої проекти",
     hero_contact: "Зв'язатися",
     about_title: "Про мене",
+    about_full_name: "Чижевський Володимир Володимирович",
     about_text1:
       "Я — веб-розробник, захоплений створенням сучасних, ефективних та візуально привабливих веб-додатків. Володію глибокими знаннями HTML5, CSS3, JavaScript та Node.js, що дозволяє мені створювати як інтерфейси, орієнтовані на користувача, так і надійний бекенд-функціонал.",
     about_text2:
@@ -51,8 +67,10 @@ const translations = {
     about_text3:
       "Кожен мій проєкт — це поєднання креативу, технічної точності та прагнення до ідеального результату.",
     about_name: "Ім'я",
+    about_name_value: "Володимир Чижевський",
     about_phone: "Телефон",
     about_location: "Місцезнаходження",
+    about_location_value: "Житомир, Україна",
     about_resume: "Завантажити Моє Резюме",
     about_more: "Більше про мене",
     skills_title: "Мої навички",
@@ -73,6 +91,51 @@ const translations = {
     filter_backend: "Backend",
     filter_fullstack: "Full Stack",
     project_site: "Сайт",
+    project1_title: "Конвертер валют",
+    project1_desc:
+      "Конвертер валют пропонує зручний сервіс для конвертації різних валют. На головному екрані користувач може обрати вихідну валюту та ввести суму для конвертації. Курси обміну відображаються в реальному часі, оскільки всі дані беруться через API від Національного банку України.",
+    project2_title: "Автолікар 24/7",
+    project2_desc:
+      "Автолікар 24/7 — це інноваційна онлайн-платформа для швидкого зв'язку автовласників із кваліфікованими фахівцями з ремонту та діагностики автомобілів, що працює цілодобово.",
+    project3_title: "ProFix Network Hub",
+    project3_desc:
+      "ProFix Network Hub — це сучасна онлайн-платформа, розроблена для ефективної комунікації між замовниками та фахівцями з різних галузей, зокрема ІТ, медицина, будівництво тощо.",
+    project4_title: "Tutors Network Hub",
+    project4_desc:
+      "Tutors Network Hub — це сучасна онлайн-платформа, створена для зручної взаємодії між учнями та репетиторами. Вона допомагає легко знайти кваліфікованих викладачів з різних предметів.",
+    project5_title: "Node.js 3024",
+    project5_desc:
+      "Node.js 3024 - це революційний курс, який підготує вас до викликів веб-розробки майбутнього.",
+    project6_title: "Ultra Calculator Pro",
+    project6_desc:
+      "Ultra Calculator Pro — потужний науковий і стандартний калькулятор з історією обчислень, підходить для студентів, школярів, інженерів.",
+    services_title: "Мої послуги",
+    service1_title: "Веб-розробка",
+    service1_desc:
+      "Розробка сучасних, швидких та адаптивних веб-сайтів з використанням HTML5, CSS3 та JavaScript.",
+    service2_title: "Бекенд-розробка",
+    service2_desc:
+      "Створення надійних серверних додатків та API з використанням Node.js та різних баз даних.",
+    service3_title: "Адаптивний дизайн",
+    service3_desc:
+      "Розробка веб-сайтів, які чудово виглядають та працюють на всіх пристроях та розмірах екранів.",
+    service4_title: "Бази даних",
+    service4_desc:
+      "Проектування та оптимізація баз даних для ефективного зберігання та доступу до даних.",
+    service5_title: "Інтеграція API",
+    service5_desc:
+      "Інтеграція сторонніх API та сервісів для розширення функціональності веб-додатків.",
+    service6_title: "SEO-оптимізація",
+    service6_desc:
+      "Оптимізація веб-сайтів для пошукових систем для покращення видимості та рейтингу.",
+    testimonials_title: "Відгуки клієнтів",
+    testimonials_loading: "Завантаження відгуків...",
+    testimonial_form_title: "Залишити відгук",
+    form_name: "Ваше ім'я",
+    form_position: "Посада та компанія",
+    form_review: "Ваш відгук",
+    form_rating: "Оцінка",
+    form_submit: "Надіслати відгук",
     counters_title: "Статистика портфоліо",
     main_counter_title: "Переглядів портфоліо",
     main_counter_desc: "Загальна кількість відвідувань платформи",
@@ -93,6 +156,23 @@ const translations = {
     footer_links: "Швидкі посилання",
     footer_social: "Соціальні мережі",
     footer_copyright: "© 2025 Володимир Чижевський. Всі права захищені.",
+    pwa_install_title: "Встановити додаток",
+    pwa_install_desc:
+      "Встановіть це портфоліо як додаток на вашому пристрої для швидкого доступу",
+    pwa_install: "Встановити",
+    pwa_later: "Пізніше",
+    toast_success: "Повідомлення успішно надіслано!",
+    pwa_install_success: "Дякуємо за встановлення додатку!",
+    activity_portfolio_view: "Новий перегляд портфоліо",
+    activity_resume_download: "Завантажено резюме",
+    activity_new_review: "Отримано новий відгук",
+    activity_new_message: "Нове повідомлення",
+    activity_new_country: "Відвідувач з нової країни",
+    activity_time_2min: "2 хвилини тому",
+    activity_time_15min: "15 хвилин тому",
+    activity_time_1hour: "1 година тому",
+    activity_time_2hours: "2 години тому",
+    activity_time_3hours: "3 години тому",
   },
   en: {
     nav_home: "Home",
@@ -109,6 +189,7 @@ const translations = {
     hero_projects: "My Projects",
     hero_contact: "Contact",
     about_title: "About Me",
+    about_full_name: "Chyzhevskyi Volodymyr Volodymyrovych",
     about_text1:
       "I am a web developer passionate about creating modern, efficient and visually appealing web applications. I have deep knowledge of HTML5, CSS3, JavaScript and Node.js, which allows me to create both user-oriented interfaces and reliable backend functionality.",
     about_text2:
@@ -116,8 +197,10 @@ const translations = {
     about_text3:
       "Each of my projects is a combination of creativity, technical precision and the pursuit of perfect results.",
     about_name: "Name",
+    about_name_value: "Volodymyr Chyzhevskyi",
     about_phone: "Phone",
     about_location: "Location",
+    about_location_value: "Zhytomyr, Ukraine",
     about_resume: "Download My Resume",
     about_more: "More About Me",
     skills_title: "My Skills",
@@ -138,6 +221,51 @@ const translations = {
     filter_backend: "Backend",
     filter_fullstack: "Full Stack",
     project_site: "Website",
+    project1_title: "Currency Converter",
+    project1_desc:
+      "Currency converter offers a convenient service for converting different currencies. On the main screen, the user can select the source currency and enter the amount for conversion. Exchange rates are displayed in real time, as all data is taken through the API from the National Bank of Ukraine.",
+    project2_title: "Car Doctor 24/7",
+    project2_desc:
+      "Car Doctor 24/7 is an innovative online platform for quick communication between car owners and qualified specialists in car repair and diagnostics, operating around the clock.",
+    project3_title: "ProFix Network Hub",
+    project3_desc:
+      "ProFix Network Hub is a modern online platform designed for effective communication between customers and specialists from various industries, including IT, medicine, construction, etc.",
+    project4_title: "Tutors Network Hub",
+    project4_desc:
+      "Tutors Network Hub is a modern online platform created for convenient interaction between students and tutors. It helps to easily find qualified teachers in various subjects.",
+    project5_title: "Node.js 3024",
+    project5_desc:
+      "Node.js 3024 is a revolutionary course that will prepare you for the challenges of future web development.",
+    project6_title: "Ultra Calculator Pro",
+    project6_desc:
+      "Ultra Calculator Pro is a powerful scientific and standard calculator with calculation history, suitable for students, schoolchildren, engineers.",
+    services_title: "My Services",
+    service1_title: "Web Development",
+    service1_desc:
+      "Development of modern, fast and responsive websites using HTML5, CSS3 and JavaScript.",
+    service2_title: "Backend Development",
+    service2_desc:
+      "Creating reliable server applications and APIs using Node.js and various databases.",
+    service3_title: "Responsive Design",
+    service3_desc:
+      "Development of websites that look great and work on all devices and screen sizes.",
+    service4_title: "Databases",
+    service4_desc:
+      "Database design and optimization for efficient data storage and access.",
+    service5_title: "API Integration",
+    service5_desc:
+      "Integration of third-party APIs and services to extend web application functionality.",
+    service6_title: "SEO Optimization",
+    service6_desc:
+      "Website optimization for search engines to improve visibility and ranking.",
+    testimonials_title: "Client Reviews",
+    testimonials_loading: "Loading reviews...",
+    testimonial_form_title: "Leave a Review",
+    form_name: "Your Name",
+    form_position: "Position and Company",
+    form_review: "Your Review",
+    form_rating: "Rating",
+    form_submit: "Submit Review",
     counters_title: "Portfolio Statistics",
     main_counter_title: "Portfolio Views",
     main_counter_desc: "Total number of platform visits",
@@ -158,6 +286,23 @@ const translations = {
     footer_links: "Quick Links",
     footer_social: "Social Media",
     footer_copyright: "© 2025 Volodymyr Chyzhevskyi. All rights reserved.",
+    pwa_install_title: "Install App",
+    pwa_install_desc:
+      "Install this portfolio as an app on your device for quick access",
+    pwa_install: "Install",
+    pwa_later: "Later",
+    toast_success: "Message sent successfully!",
+    pwa_install_success: "Thank you for installing the app!",
+    activity_portfolio_view: "New portfolio view",
+    activity_resume_download: "Resume downloaded",
+    activity_new_review: "New review received",
+    activity_new_message: "New message",
+    activity_new_country: "Visitor from new country",
+    activity_time_2min: "2 minutes ago",
+    activity_time_15min: "15 minutes ago",
+    activity_time_1hour: "1 hour ago",
+    activity_time_2hours: "2 hours ago",
+    activity_time_3hours: "3 hours ago",
   },
   pl: {
     nav_home: "Główna",
@@ -174,6 +319,7 @@ const translations = {
     hero_projects: "Moje Projekty",
     hero_contact: "Kontakt",
     about_title: "O Mnie",
+    about_full_name: "Chyzhevskyi Volodymyr Volodymyrovych",
     about_text1:
       "Jestem deweloperem internetowym pasjonującym się tworzeniem nowoczesnych, wydajnych i atrakcyjnych wizualnie aplikacji internetowych. Posiadam głęboką wiedzę na temat HTML5, CSS3, JavaScript i Node.js, co pozwala mi tworzyć zarówno interfejsy zorientowane na użytkownika, jak i niezawodną funkcjonalność backend.",
     about_text2:
@@ -181,8 +327,10 @@ const translations = {
     about_text3:
       "Każdy z moich projektów to połączenie kreatywności, precyzji technicznej i dążenia do doskonałych rezultatów.",
     about_name: "Imię",
+    about_name_value: "Volodymyr Chyzhevskyi",
     about_phone: "Telefon",
     about_location: "Lokalizacja",
+    about_location_value: "Żytomierz, Ukraina",
     about_resume: "Pobierz Moje CV",
     about_more: "Więcej O Mnie",
     skills_title: "Moje Umiejętności",
@@ -203,6 +351,51 @@ const translations = {
     filter_backend: "Backend",
     filter_fullstack: "Full Stack",
     project_site: "Strona",
+    project1_title: "Konwerter Walut",
+    project1_desc:
+      "Konwerter walut oferuje wygodną usługę konwersji różnych walut. Na głównym ekranie użytkownik może wybrać walutę źródłową i wprowadzić kwotę do konwersji. Kursy wymiany są wyświetlane w czasie rzeczywistym, ponieważ wszystkie dane są pobierane przez API z Narodowego Banku Ukrainy.",
+    project2_title: "Lekarz Samochodowy 24/7",
+    project2_desc:
+      "Lekarz Samochodowy 24/7 to innowacyjna platforma online do szybkiej komunikacji między właścicielami samochodów a wykwalifikowanymi specjalistami w zakresie napraw i diagnostyki samochodowej, działająca całodobowo.",
+    project3_title: "ProFix Network Hub",
+    project3_desc:
+      "ProFix Network Hub to nowoczesna platforma online zaprojektowana do efektywnej komunikacji między klientami a specjalistami z różnych branż, w tym IT, medycyny, budownictwa itp.",
+    project4_title: "Tutors Network Hub",
+    project4_desc:
+      "Tutors Network Hub to nowoczesna platforma online stworzona do wygodnej interakcji między uczniami a korepetytorami. Pomaga łatwo znaleźć wykwalifikowanych nauczycieli z różnych przedmiotów.",
+    project5_title: "Node.js 3024",
+    project5_desc:
+      "Node.js 3024 to rewolucyjny kurs, który przygotuje Cię na wyzwania przyszłego rozwoju stron internetowych.",
+    project6_title: "Ultra Calculator Pro",
+    project6_desc:
+      "Ultra Calculator Pro to potężny kalkulator naukowy i standardowy z historią obliczeń, odpowiedni dla studentów, uczniów, inżynierów.",
+    services_title: "Moje Usługi",
+    service1_title: "Rozwój Stron Internetowych",
+    service1_desc:
+      "Rozwój nowoczesnych, szybkich i responsywnych stron internetowych przy użyciu HTML5, CSS3 i JavaScript.",
+    service2_title: "Rozwój Backend",
+    service2_desc:
+      "Tworzenie niezawodnych aplikacji serwerowych i API przy użyciu Node.js i różnych baz danych.",
+    service3_title: "Responsywny Design",
+    service3_desc:
+      "Rozwój stron internetowych, które świetnie wyglądają i działają na wszystkich urządzeniach i rozmiarach ekranów.",
+    service4_title: "Bazy Danych",
+    service4_desc:
+      "Projektowanie i optymalizacja baz danych dla efektywnego przechowywania i dostępu do danych.",
+    service5_title: "Integracja API",
+    service5_desc:
+      "Integracja zewnętrznych API i usług w celu rozszerzenia funkcjonalności aplikacji internetowych.",
+    service6_title: "Optymalizacja SEO",
+    service6_desc:
+      "Optymalizacja stron internetowych dla wyszukiwarek w celu poprawy widoczności i rankingu.",
+    testimonials_title: "Opinie Klientów",
+    testimonials_loading: "Ładowanie opinii...",
+    testimonial_form_title: "Zostaw Opinię",
+    form_name: "Twoje Imię",
+    form_position: "Stanowisko i Firma",
+    form_review: "Twoja Opinia",
+    form_rating: "Ocena",
+    form_submit: "Wyślij Opinię",
     counters_title: "Statystyki Portfolio",
     main_counter_title: "Wyświetlenia Portfolio",
     main_counter_desc: "Całkowita liczba odwiedzin platformy",
@@ -224,6 +417,23 @@ const translations = {
     footer_social: "Media Społecznościowe",
     footer_copyright:
       "© 2025 Volodymyr Chyzhevskyi. Wszystkie prawa zastrzeżone.",
+    pwa_install_title: "Zainstaluj Aplikację",
+    pwa_install_desc:
+      "Zainstaluj to portfolio jako aplikację na swoim urządzeniu dla szybkiego dostępu",
+    pwa_install: "Zainstaluj",
+    pwa_later: "Później",
+    toast_success: "Wiadomość wysłana pomyślnie!",
+    pwa_install_success: "Dziękujemy za zainstalowanie aplikacji!",
+    activity_portfolio_view: "Nowy widok portfolio",
+    activity_resume_download: "Pobrano CV",
+    activity_new_review: "Otrzymano nową opinię",
+    activity_new_message: "Nowa wiadomość",
+    activity_new_country: "Odwiedzający z nowego kraju",
+    activity_time_2min: "2 minuty temu",
+    activity_time_15min: "15 minut temu",
+    activity_time_1hour: "1 godzinę temu",
+    activity_time_2hours: "2 godziny temu",
+    activity_time_3hours: "3 godziny temu",
   },
   de: {
     nav_home: "Startseite",
@@ -240,6 +450,7 @@ const translations = {
     hero_projects: "Meine Projekte",
     hero_contact: "Kontakt",
     about_title: "Über Mich",
+    about_full_name: "Chyzhevskyi Volodymyr Volodymyrovych",
     about_text1:
       "Ich bin ein Webentwickler, der sich leidenschaftlich für die Erstellung moderner, effizienter und visuell ansprechender Webanwendungen einsetzt. Ich verfüge über tiefgreifende Kenntnisse in HTML5, CSS3, JavaScript und Node.js, was es mir ermöglicht, sowohl benutzerorientierte Schnittstellen als auch zuverlässige Backend-Funktionalität zu erstellen.",
     about_text2:
@@ -247,8 +458,10 @@ const translations = {
     about_text3:
       "Jedes meiner Projekte ist eine Kombination aus Kreativität, technischer Präzision und dem Streben nach perfekten Ergebnissen.",
     about_name: "Name",
+    about_name_value: "Volodymyr Chyzhevskyi",
     about_phone: "Telefon",
     about_location: "Standort",
+    about_location_value: "Zhytomyr, Ukraine",
     about_resume: "Meinen Lebenslauf Herunterladen",
     about_more: "Mehr Über Mich",
     skills_title: "Meine Fähigkeiten",
@@ -269,6 +482,51 @@ const translations = {
     filter_backend: "Backend",
     filter_fullstack: "Full Stack",
     project_site: "Website",
+    project1_title: "Währungskonverter",
+    project1_desc:
+      "Der Währungskonverter bietet einen bequemen Service für die Konvertierung verschiedener Währungen. Auf dem Hauptbildschirm kann der Benutzer die Ausgangswährung auswählen und den Betrag für die Konvertierung eingeben. Wechselkurse werden in Echtzeit angezeigt, da alle Daten über die API der Nationalbank der Ukraine abgerufen werden.",
+    project2_title: "Autodoktor 24/7",
+    project2_desc:
+      "Autodoktor 24/7 ist eine innovative Online-Plattform für die schnelle Kommunikation zwischen Autobesitzern und qualifizierten Spezialisten für Autoreparatur und -diagnose, die rund um die Uhr arbeitet.",
+    project3_title: "ProFix Network Hub",
+    project3_desc:
+      "ProFix Network Hub ist eine moderne Online-Plattform, die für effektive Kommunikation zwischen Kunden und Spezialisten aus verschiedenen Branchen entwickelt wurde, einschließlich IT, Medizin, Bauwesen usw.",
+    project4_title: "Tutors Network Hub",
+    project4_desc:
+      "Tutors Network Hub ist eine moderne Online-Plattform, die für bequeme Interaktion zwischen Schülern und Tutoren erstellt wurde. Sie hilft dabei, qualifizierte Lehrer in verschiedenen Fächern leicht zu finden.",
+    project5_title: "Node.js 3024",
+    project5_desc:
+      "Node.js 3024 ist ein revolutionärer Kurs, der Sie auf die Herausforderungen der zukünftigen Webentwicklung vorbereitet.",
+    project6_title: "Ultra Calculator Pro",
+    project6_desc:
+      "Ultra Calculator Pro ist ein leistungsstarker wissenschaftlicher und Standard-Rechner mit Berechnungshistorie, geeignet für Studenten, Schüler, Ingenieure.",
+    services_title: "Meine Dienstleistungen",
+    service1_title: "Webentwicklung",
+    service1_desc:
+      "Entwicklung moderner, schneller und responsiver Websites mit HTML5, CSS3 und JavaScript.",
+    service2_title: "Backend-Entwicklung",
+    service2_desc:
+      "Erstellung zuverlässiger Serveranwendungen und APIs mit Node.js und verschiedenen Datenbanken.",
+    service3_title: "Responsives Design",
+    service3_desc:
+      "Entwicklung von Websites, die auf allen Geräten und Bildschirmgrößen großartig aussehen und funktionieren.",
+    service4_title: "Datenbanken",
+    service4_desc:
+      "Datenbankdesign und -optimierung für effiziente Datenspeicherung und -zugriff.",
+    service5_title: "API-Integration",
+    service5_desc:
+      "Integration von Drittanbieter-APIs und -Diensten zur Erweiterung der Webanwendungsfunktionalität.",
+    service6_title: "SEO-Optimierung",
+    service6_desc:
+      "Website-Optimierung für Suchmaschinen zur Verbesserung der Sichtbarkeit und des Rankings.",
+    testimonials_title: "Kundenbewertungen",
+    testimonials_loading: "Bewertungen werden geladen...",
+    testimonial_form_title: "Bewertung Hinterlassen",
+    form_name: "Ihr Name",
+    form_position: "Position und Unternehmen",
+    form_review: "Ihre Bewertung",
+    form_rating: "Bewertung",
+    form_submit: "Bewertung Senden",
     counters_title: "Portfolio-Statistiken",
     main_counter_title: "Portfolio-Aufrufe",
     main_counter_desc: "Gesamtzahl der Plattform-Besuche",
@@ -289,42 +547,51 @@ const translations = {
     footer_links: "Schnelle Links",
     footer_social: "Soziale Medien",
     footer_copyright: "© 2025 Volodymyr Chyzhevskyi. Alle Rechte vorbehalten.",
+    pwa_install_title: "App Installieren",
+    pwa_install_desc:
+      "Installieren Sie dieses Portfolio als App auf Ihrem Gerät für schnellen Zugriff",
+    pwa_install: "Installieren",
+    pwa_later: "Später",
+    toast_success: "Nachricht erfolgreich gesendet!",
+    pwa_install_success: "Danke für die Installation der App!",
+    activity_portfolio_view: "Neue Portfolio-Ansicht",
+    activity_resume_download: "Lebenslauf heruntergeladen",
+    activity_new_review: "Neue Bewertung erhalten",
+    activity_new_message: "Neue Nachricht",
+    activity_new_country: "Besucher aus neuem Land",
+    activity_time_2min: "vor 2 Minuten",
+    activity_time_15min: "vor 15 Minuten",
+    activity_time_1hour: "vor 1 Stunde",
+    activity_time_2hours: "vor 2 Stunden",
+    activity_time_3hours: "vor 3 Stunden",
   },
-};
-
-const counters = {
-  portfolioViews: 0,
-  completedProjects: 25,
-  happyClients: 18,
-  linesOfCode: 50000,
-  cupsOfCoffee: 342,
-  workingHours: 2500,
-  positiveReviews: 23,
-  resumeDownloads: 156,
-  visitorCountries: 12,
-  mobileViews: 0,
-  desktopViews: 0,
-  messagesReceived: 89,
-  todayViews: 0,
 };
 
 const activities = [
   {
     icon: "fas fa-eye",
-    text: "Новий перегляд портфоліо",
-    time: "2 хвилини тому",
+    text_key: "activity_portfolio_view",
+    time_key: "activity_time_2min",
   },
   {
     icon: "fas fa-download",
-    text: "Завантажено резюме",
-    time: "15 хвилин тому",
+    text_key: "activity_resume_download",
+    time_key: "activity_time_15min",
   },
-  { icon: "fas fa-star", text: "Отримано новий відгук", time: "1 година тому" },
-  { icon: "fas fa-envelope", text: "Нове повідомлення", time: "2 години тому" },
+  {
+    icon: "fas fa-star",
+    text_key: "activity_new_review",
+    time_key: "activity_time_1hour",
+  },
+  {
+    icon: "fas fa-envelope",
+    text_key: "activity_new_message",
+    time_key: "activity_time_2hours",
+  },
   {
     icon: "fas fa-globe",
-    text: "Відвідувач з нової країни",
-    time: "3 години тому",
+    text_key: "activity_new_country",
+    time_key: "activity_time_3hours",
   },
 ];
 
@@ -615,16 +882,17 @@ const submitTestimonial = async (e) => {
   // Re-render testimonials
   renderTestimonials();
 
-  // Show success toast
-  showToast("Дякуємо за ваш відгук!");
+  // Show success toast with translation key
+  showToast("toast_success");
 
   // Reset form
   testimonialForm.reset();
 };
 
 // Toast Notification
-const showToast = (message) => {
+const showToast = (messageKey) => {
   const toastMessage = document.querySelector(".toast-message");
+  const message = translations[currentLanguage][messageKey] || messageKey;
   toastMessage.textContent = message;
 
   toast.classList.add("show");
@@ -657,7 +925,7 @@ pwaInstallBtn.addEventListener("click", () => {
   deferredPrompt.userChoice.then((choiceResult) => {
     if (choiceResult.outcome === "accepted") {
       console.log("User accepted the install prompt");
-      showToast("Дякуємо за встановлення додатку!");
+      showToast("pwa_install_success");
     } else {
       console.log("User dismissed the install prompt");
     }
@@ -724,6 +992,9 @@ const changeLanguage = (lang) => {
   localStorage.setItem("language", lang);
   translatePage();
   languageSwitcher.classList.remove("active");
+
+  // Regenerate activity with new language
+  generateActivity();
 };
 
 const translatePage = () => {
@@ -731,13 +1002,28 @@ const translatePage = () => {
   elements.forEach((element) => {
     const key = element.getAttribute("data-translate");
     if (translations[currentLanguage] && translations[currentLanguage][key]) {
-      if (element.innerHTML.includes("<span>")) {
+      // Check if the element contains HTML (like spans)
+      if (
+        element.innerHTML.includes("<span>") ||
+        element.innerHTML.includes("<")
+      ) {
         element.innerHTML = translations[currentLanguage][key];
       } else {
         element.textContent = translations[currentLanguage][key];
       }
     }
   });
+
+  document.documentElement.lang =
+    currentLanguage === "ua" ? "uk" : currentLanguage;
+
+  const titleTranslations = {
+    ua: "Володимир Чижевський | Веб-розробник",
+    en: "Volodymyr Chyzhevskyi | Web Developer",
+    pl: "Volodymyr Chyzhevskyi | Deweloper Web",
+    de: "Volodymyr Chyzhevskyi | Web-Entwickler",
+  };
+  document.title = titleTranslations[currentLanguage];
 };
 
 const initLanguage = () => {
@@ -803,13 +1089,19 @@ const generateActivity = () => {
     activities.forEach((activity) => {
       const activityItem = document.createElement("div");
       activityItem.className = "activity-item";
+
+      const text =
+        translations[currentLanguage][activity.text_key] || activity.text_key;
+      const time =
+        translations[currentLanguage][activity.time_key] || activity.time_key;
+
       activityItem.innerHTML = `
         <div class="activity-icon">
           <i class="${activity.icon}"></i>
         </div>
         <div class="activity-content">
-          <p>${activity.text}</p>
-          <div class="activity-time">${activity.time}</div>
+          <p>${text}</p>
+          <div class="activity-time">${time}</div>
         </div>
       `;
       activityList.appendChild(activityItem);
